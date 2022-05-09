@@ -33,6 +33,9 @@ appointment_data['Disability'].value_counts()
 #  Disability has values outside of what is defined
 # TODO: cleanup Disability column
 
+appointment_data[appointment_data['Disability'] == 2] = 1
+appointment_data[appointment_data['Disability'] == 3] = 1
+appointment_data[appointment_data['Disability'] == 4] = 1
 
 '''since gender is only between M and F, 
 one hot encoding could be used'''
@@ -112,6 +115,7 @@ plt.xlabel('SMS_received')
 plt.ylabel('Frequency of No-shows')
 plt.savefig('No_show_frequency_SMS')
 
+# Stacked bar charts to compare classes with each other without the frequency
 table = pd.crosstab(appointment_data['Gender'], appointment_data['No-show'])
 table.div(table.sum(1).astype(float), axis=0).plot(kind='bar', stacked=True)
 plt.title('Stacked Bar Chart of Gender vs No-show')
@@ -134,7 +138,7 @@ plt.title('Stacked Bar Chart of Diabetes vs No-show')
 plt.xlabel('Diabetes')
 plt.ylabel('Proportion of No-shows')
 plt.savefig('diabetes_vs_noshow_stack')
-# diabetes seems like a good predictor
+# diabetes does not seems like a good predictor
 table = pd.crosstab(
     appointment_data['Alcoholism'], appointment_data['No-show'])
 table.div(table.sum(1).astype(float), axis=0).plot(kind='bar', stacked=True)
@@ -265,12 +269,24 @@ rfe = rfe.fit(os_data_X, os_data_y.values.ravel())
 print(rfe.support_)
 print(rfe.ranking_)
 # All features pass as true, so all features are significant
-# for the model 
+# for the model
 
 # Putting X and y to original data
 
 X = os_data_X
 y = os_data_y.values.ravel()
+
+# Print out Feature Importance
+logreg.fit(X, y)
+importance = logreg.coef_[0]
+for i, v in enumerate(importance):
+    print('Feature: %0d, Score: %.5f' % (i, v))
+plt.bar([x for x in range(len(importance))], importance)
+plt.title(
+    'Bar chart of Logistic Regression Coefficients as Feature Importance Scores')
+plt.xlabel('Feature[0-10]')
+plt.ylabel('Feature Importance Score')
+plt.show()
 #  Model Implementation
 logit_model = sm.Logit(y, X)
 result = logit_model.fit()
@@ -285,13 +301,17 @@ logreg.fit(X_train, y_train)
 #  Predicting test results
 y_pred = logreg.predict(X_test)
 
-# Printing the Probabilities and showcasing in dataframe  
+# Printing the Probabilities and showcasing in dataframe
 y_probs = logreg.predict_proba(X_test)
 
 # Calculate Accuracy
 print('Accuracy of logistic regression classifier on test set: {:.2f}'.format(
     logreg.score(X_test, y_test)))
 
+
+#  Show graph of logistic regression for better understanding
+# plt.scatter(X,logreg.predict_proba(X)[:,1])
+sns.regplot(x='SMS_received', y='No-show', data=data_final, logistic=True)
 # Validation with Confusion Matrix
 confusion_matrix = confusion_matrix(y_test, y_pred)
 print(confusion_matrix)
