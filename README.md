@@ -52,7 +52,7 @@ I use [**Shields IO**](https://shields.io/) for making badges. It is a simple an
 
 ![Tweet](https://img.shields.io/twitter/url?style=flat-square&logo=twitter&url=https%3A%2F%2Fnavendu.me%2Fnsfw-filter%2Findex.html): This is not essential but it is a cool way to let others know about your project! Clicking this button automatically opens twitter and writes a tweet about your project and link to it. All the user has to do is to click tweet. Isn't that neat? -->
 
-# Demo-Preview
+
 
 <!-- Add a demo for your project -->
 
@@ -68,7 +68,7 @@ Here is a random GIF as a placeholder.
 
 Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README. -->
 
-- [Project Title](#project-title)
+- [Predicting Patient No-Shows](#project-title)
 - [Demo-Preview](#demo-preview)
 - [Table of contents](#table-of-contents)
 - [Installation](#installation)
@@ -78,6 +78,8 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 - [Footer](#footer)
 
 # Installation
+
+No installation necessary as no packaging was done. All main working code is within the main.ipynb notebook under the "notebooks folder.
 [(Back to top)](#table-of-contents)
 
 <!-- *You might have noticed the **Back to top** button(if not, please notice, it's right there!). This is a good idea because it makes your README **easy to navigate.*** 
@@ -101,11 +103,17 @@ To use this project, first clone the repo on your device using the command below
 
 
 # Usage
+
+Using your IDE of choice, such as Jupyter Lab, you can open up the main.ipynb notebook to view working code. 
+
+If you use Interactive Window in Visual Studio Code, the main.py under "modules" would be best for you to use. 
 [(Back to top)](#table-of-contents)
 
 <!-- This is optional and it is used to give the user info on how to use the project after installation. This could be added in the Installation section also. -->
 
 # Development
+
+Development tools used is VS code and a Windows Operating System, with anaconda as the python base library. 
 [(Back to top)](#table-of-contents)
 
 <!-- This is the place where you give instructions to developers on how to modify the code.
