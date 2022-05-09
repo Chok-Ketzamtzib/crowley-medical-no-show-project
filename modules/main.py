@@ -1,3 +1,6 @@
+from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn import metrics
 import statsmodels.api as sm
@@ -252,6 +255,22 @@ print("Proportion of not no-shows data in oversampled data is ",
 print("Proportion of no-shows data in oversampled data is ",
       len(os_data_y[os_data_y['No-show'] == 1])/len(os_data_X))
 
+# Recursive Feature Elimination
+data_final_vars = data_final.columns.values.tolist()
+y = ['No-show']
+X = [i for i in data_final_vars if i not in y]
+logreg = LogisticRegression(max_iter=10000)
+rfe = RFE(logreg, n_features_to_select=11)
+rfe = rfe.fit(os_data_X, os_data_y.values.ravel())
+print(rfe.support_)
+print(rfe.ranking_)
+# All features pass as true, so all features are significant
+# for the model 
+
+# Putting X and y to original data
+
+X = os_data_X
+y = os_data_y.values.ravel()
 #  Model Implementation
 logit_model = sm.Logit(y, X)
 result = logit_model.fit()
@@ -260,11 +279,15 @@ print(result.summary2())
 # Model fitting
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=0)
-logreg = LogisticRegression()
+# logreg = LogisticRegression()
 logreg.fit(X_train, y_train)
 
 #  Predicting test results
 y_pred = logreg.predict(X_test)
+
+# Printing the Probabilities and showcasing in dataframe  
+y_probs = logreg.predict_proba(X_test)
+
 # Calculate Accuracy
 print('Accuracy of logistic regression classifier on test set: {:.2f}'.format(
     logreg.score(X_test, y_test)))
@@ -273,3 +296,19 @@ print('Accuracy of logistic regression classifier on test set: {:.2f}'.format(
 confusion_matrix = confusion_matrix(y_test, y_pred)
 print(confusion_matrix)
 # Confusion matrix does not look right TODO: investigate further
+
+print(classification_report(y_test, y_pred))
+
+logit_roc_auc = roc_auc_score(y_test, logreg.predict(X_test))
+fpr, tpr, thresholds = roc_curve(y_test, logreg.predict_proba(X_test)[:, 1])
+plt.figure()
+plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % logit_roc_auc)
+plt.plot([0, 1], [0, 1], 'r--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('Log_ROC')
+plt.show()
